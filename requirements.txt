@@ -1,0 +1,7 @@
+langchain>=0.2.0
+langgraph>=0.1.0
+langchain-google-genai
+pandas
+yfinance
+duckduckgo-search
+python-dotenv
