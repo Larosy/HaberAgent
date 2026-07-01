@@ -1,4 +1,4 @@
-from duckduckgo_search import DDGS
+import yfinance as yf
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import ChatPromptTemplate
 from src.state import AgentState
@@ -7,10 +7,16 @@ def news_agent_node(state: AgentState) -> AgentState:
     ticker = state["ticker"]
     print(f"[News Agent] Fetching and analyzing news for {ticker}...")
     
-    # Fetch news
+    # Fetch news using yfinance
     try:
-        with DDGS() as ddgs:
-            results = list(ddgs.text(f"{ticker} stock news", max_results=5))
+        stock = yf.Ticker(ticker)
+        raw_news = stock.news
+        results = []
+        for n in raw_news[:5]:
+            content = n.get("content", n)
+            title = content.get("title", "No Title")
+            summary = content.get("summary", "")
+            results.append({"title": title, "body": summary})
     except Exception as e:
         results = []
         print(f"[News Agent] Error fetching news: {e}")
